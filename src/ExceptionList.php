@@ -10,6 +10,8 @@ class ExceptionList extends RoutedPage {
 
   public function render($arguments) {
 
+    PageRenderer::addTemplatesLocation(__DIR__ . "/../templates");
+
     Permissions::need("exceptions");
 
     PageRenderer::header(array(
@@ -17,7 +19,15 @@ class ExceptionList extends RoutedPage {
       "id" => "page_exception_list",
     ));
 
-    PageRenderer::requireTemplate("exception_list", array());
+    $limit = (int) (isset($arguments['limit']) ? $arguments['limit'] : 10);
+
+    $q = db()->prepare("SELECT * FROM uncaught_exceptions ORDER BY id desc LIMIT $limit");
+    $q->execute();
+    $exceptions = $q->fetchAll();
+
+    PageRenderer::requireTemplate("exception_list", array(
+      "exceptions" => $exceptions,
+    ));
 
     PageRenderer::footer();
 

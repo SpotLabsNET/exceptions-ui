@@ -1,2 +1,14 @@
 %h1 Exceptions
 
+%p
+  Show:
+  != link_to(url_for("admin/exceptions/list", array('limit' => 5)), "5")
+  != link_to(url_for("admin/exceptions/list", array('limit' => 10)), "10")
+  != link_to(url_for("admin/exceptions/list", array('limit' => 40)), "40")
+
+%ul
+  - foreach ($exceptions as $e)
+    %li
+      %b = $e["id"]
+
+      #{$e["message"]} (#{$e["class_name"]} - #{$e["filename"]}:#{$e["line_number"]}) (#{$e["argument_type"]} #{$e["argument_id"]})
