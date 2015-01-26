@@ -1,6 +1,6 @@
 <?php
 
-namespace \Openclerk\Exceptions\Pages;
+namespace Openclerk\Exceptions\Pages;
 
 use \Openclerk\RoutedPage;
 use \Openclerk\Permissions\Permissions;
@@ -21,6 +21,10 @@ class ExceptionList extends RoutedPage {
 
     PageRenderer::footer();
 
+  }
+
+  public function getPath() {
+    return "admin/exceptions/list";
   }
 
 }
