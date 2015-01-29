@@ -1,14 +1,51 @@
 %h1 Exceptions
 
 %p
+  != link_to(url_for("admin/exceptions/list"), t("Reset"))
+
   Show:
-  != link_to(url_for("admin/exceptions/list", array('limit' => 5)), "5")
-  != link_to(url_for("admin/exceptions/list", array('limit' => 10)), "10")
-  != link_to(url_for("admin/exceptions/list", array('limit' => 40)), "40")
+  != link_to(url_add($url, array("limit" => 5)), "5")
+  != link_to(url_add($url, array('limit' => 10)), "10")
+  != link_to(url_add($url, array('limit' => 40)), "40")
 
-%ul
-  - foreach ($exceptions as $e)
-    %li
-      %b = $e["id"]
+  != link_to(url_add($url, array('ignored' => 1)), t("Important"))
+  != link_to(url_add($url, array('ignored' => 1)), t("Ignored"))
 
-      #{$e["message"]} (#{$e["class_name"]} - #{$e["filename"]}:#{$e["line_number"]}) (#{$e["argument_type"]} #{$e["argument_id"]})
+%table.exception_list
+  %thead
+    %tr
+      %th ID
+      %th Message
+      %th Type
+      %th File
+      %th Argument
+
+      %th Actions
+
+  %tbody
+    - foreach ($exceptions as $e)
+      %tr
+        %td.number =$e["id"]
+        %td =$e["message"]
+        %td
+          :php
+            $class_name = $e["class_name"];
+            $class_name = explode("\\", $class_name);
+          != link_to(url_add($url, array('class' => $e["class_name"])), $class_name[count($class_name)-1])
+        %td
+          :php
+            $filename = str_replace("\\", "/", $e["filename"]);
+            $filename = explode("/", $filename);
+          #{$filename[count($filename)-1]}:#{$e["line_number"]}
+
+        %td
+          #{$e["argument_type"]} #{$e["argument_id"]}
+
+        %td
+          ignore
+          important
+
+    - if (!$exceptions)
+      %tr
+        %td{colspan: 6}
+          %i =t("No results")
